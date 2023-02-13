@@ -5,17 +5,18 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.pool import QueuePool
 
 from app.db.models import Base
-from config import CONFIG
-from app.utils import PathUtils
+from app.utils import ExceptionUtils, PathUtils
+from config import Config
 
 lock = threading.Lock()
 _Engine = create_engine(
-    f"sqlite:///{os.path.join(CONFIG.get_config_path(), 'user.db')}?check_same_thread=False",
+    f"sqlite:///{os.path.join(Config().get_config_path(), 'user.db')}?check_same_thread=False",
     echo=False,
     poolclass=QueuePool,
     pool_pre_ping=True,
     pool_size=50,
-    pool_recycle=60 * 30
+    pool_recycle=60 * 10,
+    max_overflow=0
 )
 _Session = scoped_session(sessionmaker(bind=_Engine,
                                        autoflush=True,
@@ -38,9 +39,9 @@ class MainDb:
         """
         读取config目录下的sql文件，并初始化到数据库，只处理一次
         """
-        config = CONFIG.get_config()
-        init_files = CONFIG.get_config("app").get("init_files") or []
-        config_dir = os.path.join(CONFIG.get_root_path(), "config")
+        config = Config().get_config()
+        init_files = Config().get_config("app").get("init_files") or []
+        config_dir = Config().get_script_path()
         sql_files = PathUtils.get_dir_level1_files(in_path=config_dir, exts=".sql")
         config_flag = False
         for sql_file in sql_files:
@@ -49,12 +50,15 @@ class MainDb:
                 with open(sql_file, "r", encoding="utf-8") as f:
                     sql_list = f.read().split(';\n')
                     for sql in sql_list:
-                        self.excute(sql)
-                        self.commit()
+                        try:
+                            self.excute(sql)
+                            self.commit()
+                        except Exception as err:
+                            print(str(err))
                 init_files.append(os.path.basename(sql_file))
         if config_flag:
             config['app']['init_files'] = init_files
-            CONFIG.save_config(config)
+            Config().save_config(config)
 
     def insert(self, data):
         """
@@ -111,7 +115,7 @@ class DbPersist(object):
                 self.db.commit()
                 return True if ret is None else ret
             except Exception as e:
-                print(e.args)
+                ExceptionUtils.exception_traceback(e)
                 self.db.rollback()
                 return False
 

@@ -3,7 +3,7 @@ from functools import lru_cache
 import requests
 from lxml import etree
 
-from app.utils import RequestUtils
+from app.utils import RequestUtils, ExceptionUtils
 from app.utils.commons import singleton
 
 
@@ -196,7 +196,7 @@ class DoubanWeb(object):
                 if text:
                     obj[key] = text[0]
             except Exception as e:
-                print(e)
+                ExceptionUtils.exception_traceback(e)
         return obj
 
     @classmethod

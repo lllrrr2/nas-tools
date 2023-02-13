@@ -1,3 +1,4 @@
+{% import 'macro/svg.html' as SVG %}
 <div class="container-xl">
   <div class="page-header d-print-none">
     <div class="row align-items-center">
@@ -9,46 +10,18 @@
       <div class="col-auto ms-auto d-print-none">
         <div class="btn-list">
           <a href="javascript:batch_download()" class="btn btn-primary d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-down" width="24"
-                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path
-                      d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z">
-              </path>
-            </svg>
+            {{ SVG.arrow_big_down() }}
             一键下载
           </a>
           <a href="javascript:batch_download()" class="btn btn-primary d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-down" width="24"
-                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path
-                      d="M15 4v8h3.586a1 1 0 0 1 .707 1.707l-6.586 6.586a1 1 0 0 1 -1.414 0l-6.586 -6.586a1 1 0 0 1 .707 -1.707h3.586v-8a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1z">
-              </path>
-            </svg>
+            {{ SVG.arrow_big_down() }}
           </a>
           <a href="javascript:navmenu('sitelist')" class="btn d-none d-sm-inline-block" title="返回">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="40"
-                 height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1"></path>
-            </svg>
+            {{ SVG.arrow_back_up() }}
             返回
           </a>
           <a href="javascript:navmenu('sitelist')" class="btn d-sm-none btn-icon" title="返回">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-back-up" width="40"
-                 height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M9 13l-4 -4l4 -4m-4 4h11a4 4 0 0 1 0 8h-1"></path>
-            </svg>
+            {{ SVG.arrow_back_up() }}
           </a>
         </div>
       </div>
@@ -78,8 +51,10 @@
             <table id="site-resources-table" class="table table-vcenter card-table table-hover table-striped">
               <thead>
               <tr>
-                <th class="w-1"><input class="form-check-input m-0 align-middle" id="resources_check_all_btn"
-                                       type="checkbox" aria-label="全选"></th>
+                <th class="w-1">
+                  <input class="form-check-input m-0 align-middle" type="checkbox" aria-label="全选"
+                           onclick="select_SelectALL($(this).prop('checked'), 'resources_item')">
+                </th>
                 <th>标题</th>
                 <th>
                   <button class="table-sort" data-sort="sort-pubdate">发布时间</button>
@@ -104,7 +79,7 @@
                 {% for Result in Results %}
                   <tr>
                     <td>
-                      <input class="form-check-input m-0 align-middle" id="check_{{ loop.index0 }}" type="checkbox">
+                      <input class="form-check-input m-0 align-middle" name="resources_item" value="{{ loop.index0 }}" type="checkbox">
                       <input type="hidden" id="enclosure_{{ loop.index0 }}" value="{{ Result.enclosure }}">
                       <input type="hidden" id="title_{{ loop.index0 }}" value="{{ Result.title }}">
                       <input type="hidden" id="description_{{ loop.index0 }}" value="{{ Result.description }}">
@@ -117,7 +92,7 @@
                              value="{{ Result.downloadvolumefactor }}">
                     </td>
                     <td>
-                      <div class="font-weight-medium strong">
+                      <div class="font-weight-medium strong text-nowrap">
                         <a href="{{ Result.page_url }}" target="_blank">{{ Result.title }} </a>
                         {% if Result.uploadvolumefactor != 1.0 %}
                           <span class="badge text-white bg-azure">{{ (Result.uploadvolumefactor * 100) | int }}%UL</span>
@@ -129,20 +104,10 @@
                             <span class="badge text-white bg-blue">{{ (Result.downloadvolumefactor * 100) | int }}%DL</span>
                           {% endif %}
                         {% endif %}
-                        <a class="ms-2" title="名称测试"
-                           href="javascript:nametest('{{ loop.index0 }}', '{{ Result.title }}')"
+                        <a class="ms-2 mb-1" title="名称测试"
+                           href='javascript:nametest("{{ loop.index0 }}", "{{ Result.title }}")'
                            data-bs-toggle="tooltip">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language"
-                               width="24"
-                               height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                               stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M4 5h7"></path>
-                            <path d="M9 3v2c0 4.418 -2.239 8 -5 8"></path>
-                            <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"></path>
-                            <path d="M12 20l4 -9l4 9"></path>
-                            <path d="M19.1 18h-6.2"></path>
-                          </svg>
+                          {{ SVG.text_recognition() }}
                         </a>
                       </div>
                       <div class="text-muted">
@@ -152,7 +117,7 @@
                         {% endif %}
                         {{ Result.description }}
                       </div>
-                      <div id="testresults_{{ loop.index0 }}" class="text-muted"></div>
+                      <custom-chips class="mt-1" id="testresults_{{ loop.index0 }}"></custom-chips>
                     </td>
                     <td class="sort-pubdate" data-pubdate="{{ Result.pubdate }}">{{ Result.date_elapsed }}</td>
                     <td class="sort-size" data-size="{{ Result.size }}">
@@ -164,14 +129,7 @@
                     <td>
                       <a href='javascript:download_site_resource({{ loop.index0 }}, "{{ Result.title }}")'
                          title="下载">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-download" width="24"
-                             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                             stroke-linecap="round" stroke-linejoin="round">
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                          <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                          <polyline points="7 11 12 16 17 11"></polyline>
-                          <line x1="12" y1="4" x2="12" y2="16"></line>
-                        </svg>
+                        {{ SVG.download() }}
                       </a>
                     </td>
                   </tr>
@@ -191,12 +149,7 @@
                 <li class="page-item {% if CurrentPage == 0 %} disabled {% endif %}">
                   <a class="page-link" href='javascript:go_pre_page({{ CurrentPage }})' tabindex="-1"
                      aria-disabled="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
-                         stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <polyline points="15 6 9 12 15 18"/>
-                    </svg>
+                    {{ SVG.chevron_left() }}
                   </a>
                 </li>
                 {% for page in PageRange %}
@@ -207,12 +160,7 @@
                 <li class="page-item {% if CurrentPage + 1 >= TotalPage %} disabled {% endif %}">
                   <a class="page-link"
                      href='{% if CurrentPage < TotalPage %}javascript:go_next_page({{ CurrentPage }}){% else %}javascript:void(0){% endif %}'>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
-                         stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <polyline points="9 6 15 12 9 18"/>
-                    </svg>
+                    {{ SVG.chevron_right() }}
                   </a>
                 </li>
               </ul>
@@ -228,27 +176,29 @@
   tableDataList = new List('site-resources-table', {
     sortClass: 'table-sort',
     listClass: 'table-tbody',
-    valueNames: ['sort-pubdate', 'sort-size', 'sort-seeders', 'sort-peers', 'sort-grabs']
+    valueNames: ['sort-seeders', 'sort-peers', 'sort-grabs',
+                {attr: 'data-size', name: 'sort-size'},
+                {attr: 'data-pubdate', name: 'sort-pubdate'}]
   });
 
   //跳转页
   function go_page(page) {
-    navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + page + "&keyword=" + $("#search_word").val())
+    navmenu(`resources?site={{ SiteId }}&title={{ Title }}&page=${page}&keyword=${$("#search_word").val()}`)
   }
 
   // 上一页
   function go_pre_page(page) {
-    navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + (page - 1) + "&keyword=" + $("#search_word").val())
+    navmenu(`resources?site={{ SiteId }}&title={{ Title }}&page=${page - 1}&keyword=${$("#search_word").val()}`)
   }
 
   // 下一页
   function go_next_page(page) {
-    navmenu("resources?site={{ SiteId }}" + "&title={{ Title }}" + "&page=" + (page + 1) + "&keyword=" + $("#search_word").val())
+    navmenu(`resources?site={{ SiteId }}&title={{ Title }}&page=${page + 1}&keyword=${$("#search_word").val()}`)
   }
 
   //下载按钮
   function download_site_resource(id, name) {
-    show_download_modal(id, name, function(){
+    show_download_modal(id, name, "{{ Title }}", function(){
       $("#modal-search-download").modal('hide');
       download_resource(id, false);
     })
@@ -260,16 +210,15 @@
 
   function download_resource(id, batch) {
     const site = "{{ Title }}";
-    const enclosure = $("#enclosure_" + id).val();
-    const title = $("#title_" + id).val();
-    const description = $("#description_" + id).val();
-    const page_url = $("#page_url_" + id).val();
-    const size = $("#size_" + id).val();
-    const seeders = $("#seeders_" + id).val();
-    const uploadvolumefactor = $("#uploadvolumefactor_" + id).val();
-    const downloadvolumefactor = $("#downloadvolumefactor_" + id).val();
+    const enclosure = $(`#enclosure_${id}`).val();
+    const title = $(`#title_${id}`).val();
+    const description = $(`#description_${id}`).val();
+    const page_url = $(`#page_url_${id}`).val();
+    const size = $(`#size_${id}`).val();
+    const seeders = $(`#seeders_${id}`).val();
+    const uploadvolumefactor = $(`#uploadvolumefactor_${id}`).val();
+    const downloadvolumefactor = $(`#downloadvolumefactor_${id}`).val();
     if (!batch || current_download === 0) {
-      show_wait_process();
     }
     const params = {
       site: site,
@@ -286,7 +235,6 @@
     };
     ajax_post("download_link", params, function (ret) {
       if (!batch) {
-        hide_wait_process();
         if (ret.code === 0) {
           show_success_modal(`${title} 添加下载成功！`);
         } else {
@@ -303,7 +251,6 @@
             download_resource(total_downloads[current_download], true);
           }
         } else {
-          hide_wait_process();
           show_success_modal("添加下载完成！");
         }
       }
@@ -314,20 +261,12 @@
   //批量下载
   function batch_download() {
     total_downloads = [];
-    let i = 0;
-    $(".table-responsive input[type=checkbox]").each(function () {
-      if ($(this).prop("checked")) {
-        let checkid = $(this).attr("id");
-        if (checkid && checkid.startsWith("check_")) {
-          let id = checkid.replace("check_", "");
-          let name = $("#title_" + id).val();
-          if (name) {
-            total_downloads[i] = id
-            i = i + 1;
-          }
-        }
+    let download_items_id = select_GetSelectedVAL("resources_item");
+    for (let id in download_items_id) {
+      if ($(`#title_${id}`).val()) {
+        total_downloads.push(id);
       }
-    });
+    }
     if (total_downloads.length === 0) {
       return;
     }
@@ -335,16 +274,9 @@
     download_resource(total_downloads[current_download], true);
   }
 
-  //全选事件
-  $("#resources_check_all_btn").change(function () {
-    $(".table-responsive input[type=checkbox]").prop("checked", $(this).prop("checked"));
-  });
-
   //名称测试
   function nametest(id, title) {
-    show_wait_process();
     media_name_test(title, `testresults_${id}`, function () {
-      hide_wait_process();
     });
   }
 

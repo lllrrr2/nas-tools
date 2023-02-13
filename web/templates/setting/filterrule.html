@@ -1,3 +1,5 @@
+{% import 'macro/svg.html' as SVG %}
+{% import 'macro/oops.html' as OOPS %}
 <div class="container-xl">
   <!-- Page title -->
   <div class="page-header d-print-none">
@@ -10,61 +12,25 @@
       <div class="col-auto ms-auto d-print-none">
         <div class="btn-list">
           <a href="javascript:show_add_filtergroup_modal()" class="btn btn-primary d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            {{ SVG.plus() }}
             新增
           </a>
           <a href="javascript:show_add_filtergroup_modal()" class="btn btn-primary d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            {{ SVG.plus() }}
           </a>
           <a href="javascript:show_restore_filtergroup_modal()" class="btn btn-twitter d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 16 16"
-                 fill="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-              <path
-                      d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-            </svg>
+            {{ SVG.reload() }}
             恢复
           </a>
           <a href="javascript:show_restore_filtergroup_modal()" class="btn btn-twitter d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 16 16"
-                 fill="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-              <path
-                      d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-            </svg>
+            {{ SVG.reload() }}
           </a>
           <a href="javascript:show_import_filtergroup_modal()" class="btn btn-success d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-transfer-in" width="24"
-                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M4 18v3h16v-14l-8 -4l-8 4v3"></path>
-              <path d="M4 14h9"></path>
-              <path d="M10 11l3 3l-3 3"></path>
-            </svg>
+            {{ SVG.transfer_in() }}
             导入
           </a>
           <a href="javascript:show_import_filtergroup_modal()" class="btn btn-success d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-transfer-in" width="24"
-                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M4 18v3h16v-14l-8 -4l-8 4v3"></path>
-              <path d="M4 14h9"></path>
-              <path d="M10 11l3 3l-3 3"></path>
-            </svg>
+            {{ SVG.transfer_in() }}
           </a>
         </div>
       </div>
@@ -75,97 +41,68 @@
 {% if Count > 0 %}
   <div class="page-body">
     <div class="container-xl">
-      <div class="row row-cards">
+      <div class="d-grid gap-3 grid-info-card">
         {% for RuleGroup in RuleGroups %}
-          <div class="col-12 col-md-6 col-xl-4">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"><strong>{{ RuleGroup.name }}</strong></h3>
-                <div class="card-actions btn-actions">
-                  <a href="javascript:share_filtergroup('{{ RuleGroup.id }}')" class="btn-action" title="分享规则组">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-share" width="24"
-                         height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                         stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <circle cx="6" cy="12" r="3"></circle>
-                      <circle cx="18" cy="6" r="3"></circle>
-                      <circle cx="18" cy="18" r="3"></circle>
-                      <line x1="8.7" y1="10.7" x2="15.3" y2="7.3"></line>
-                      <line x1="8.7" y1="13.3" x2="15.3" y2="16.7"></line>
-                    </svg>
-                  </a>
-                  <a href="javascript:set_default_filtergroup('{{ RuleGroup.id }}')" class="btn-action"
-                     title="设置/取消默认">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="icon icon-tabler icon-tabler-star {% if RuleGroup.default == 'Y' %}icon-filled text-purple{% endif %}"
-                         width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                         stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path
-                              d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z">
-                      </path>
-                    </svg>
-                  </a>
-                  <a href="javascript:show_add_filterrule_modal('{{ RuleGroup.id }}', '{{ RuleGroup.name }}')"
-                     class="btn-action" title="增加规则">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="40"
-                         height="40"
-                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
-                         stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                  </a>
-                  <a href="javascript:del_filtergroup_modal('{{ RuleGroup.id }}', '{{ RuleGroup.name }}')"
-                     class="btn-action" title="删除规则组">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                         stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
-                         stroke-linejoin="round">
-                      <desc>Download more icon variants from https://tabler-icons.io/i/x</desc>
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <line x1="18" y1="6" x2="6" y2="18"/>
-                      <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="row row-cards">
-                  {% if RuleGroup.rules %}
-                    {% for Rule in RuleGroup.rules %}
-                      <div class="col-12">
-                        <a class="card card-link card-link-pop card-borderless"
-                           href="javascript:show_modify_filterrule_modal('{{ RuleGroup.id }}', '{{ Rule.id }}', '{{ RuleGroup.name }}')"
-                           title="编辑规则">
-                          <div class="card-body">
-                            <h3 class="card-title">{{ Rule.name }}</h3>
-                            <div class="w-100">
-                              {% if Rule.free_text %}
-                                <span class="badge bg-info me-1 mb-1 text-wrap text-start"
-                                      title="促销">{{ Rule.free_text }}</span>
-                              {% endif %}
-                              {% for include in Rule.include %}
-                                <span class="badge badge-outline text-info me-1 mb-1 text-wrap text-start"
-                                      title="包含规则">包含: {{ include }}</span>
-                              {% endfor %}
-                              {% for exclude in Rule.exclude %}
-                                <span class="badge badge-outline text-red me-1 mb-1 text-wrap text-start"
-                                      title="排除规则">排除: {{ exclude }}</span>
-                              {% endfor %}
-                              {% if Rule.size %}
-                                <span class="badge badge-outline text-orange me-1 mb-1 text-wrap text-start"
-                                      title="大小限制">大小: {{ Rule.size }}</span>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </a>
-                      </div>
-                    {% endfor %}
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><strong>{{ RuleGroup.name }}</strong></h3>
+              <div class="card-actions btn-actions">
+                <a href="javascript:share_filtergroup('{{ RuleGroup.id }}')" class="btn-action" title="分享规则组">
+                  {{ SVG.share() }}
+                </a>
+                <a href="javascript:set_default_filtergroup('{{ RuleGroup.id }}')" class="btn-action"
+                   title="设置/取消默认">
+                  {% if RuleGroup.default == 'Y' %}
+                    <span class="text-purple">{{ SVG.star('icon-filled') }}</span>
                   {% else %}
-                    <div class="text-muted mt-2">未设置规则</div>
+                    {{ SVG.star() }}
                   {% endif %}
-                </div>
+                </a>
+                <a href="javascript:show_add_filterrule_modal('{{ RuleGroup.id }}', '{{ RuleGroup.name }}')"
+                   class="btn-action" title="增加规则">
+                  {{ SVG.plus() }}
+                </a>
+                <a href="javascript:del_filtergroup_modal('{{ RuleGroup.id }}', '{{ RuleGroup.name }}')"
+                   class="btn-action" title="删除规则组">
+                  {{ SVG.x() }}
+                </a>
+              </div>
+            </div>
+            <div class="card-body p-2">
+              <div class="row row-cards">
+                {% if RuleGroup.rules %}
+                  {% for Rule in RuleGroup.rules %}
+                    <div class="col-12">
+                      <a class="card card-link card-link-pop card-borderless"
+                         href="javascript:show_modify_filterrule_modal('{{ RuleGroup.id }}', '{{ Rule.id }}', '{{ RuleGroup.name }}')"
+                         title="编辑规则">
+                        <div class="card-body p-2">
+                          <h3 class="card-title">{{ Rule.name }}</h3>
+                          <div class="w-100">
+                            {% if Rule.free_text %}
+                              <span class="badge bg-info me-1 mb-1 text-wrap text-start"
+                                    title="促销" style='word-break: break-all'>{{ Rule.free_text }}</span>
+                            {% endif %}
+                            {% for include in Rule.include %}
+                              <span class="badge badge-outline text-info me-1 mb-1 text-wrap text-start"
+                                    title="包含规则" style='word-break: break-all'>包含: {{ include }}</span>
+                            {% endfor %}
+                            {% for exclude in Rule.exclude %}
+                              <span class="badge badge-outline text-red me-1 mb-1 text-wrap text-start"
+                                    title="排除规则" style='word-break: break-all'>排除: {{ exclude }}</span>
+                            {% endfor %}
+                            {% if Rule.size %}
+                              <span class="badge badge-outline text-orange me-1 mb-1 text-wrap text-start"
+                                    title="大小限制" style='word-break: break-all'>大小: {{ Rule.size }}</span>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  {{ OOPS.empty('没有规则', '请点击"+"添加规则。') }}
+                {% endif %}
               </div>
             </div>
           </div>
@@ -174,22 +111,11 @@
     </div>
   </div>
 {% else %}
-  <div class="page-body">
-    <div class="container-xl d-flex flex-column justify-content-center">
-      <div class="empty">
-        <div class="empty-img"><img src="./static/img/sign_in.svg" height="128" alt="">
-        </div>
-        <p class="empty-title">没有规则</p>
-        <p class="empty-subtitle text-muted">
-          没有配置任何规则，请点击“新增规则组“按钮。
-        </p>
-      </div>
-    </div>
-  </div>
+  {{ OOPS.empty('没有规则', '没有配置任何规则，请点击“新增规则组“按钮。') }}
 {% endif %}
 <div class="modal modal-blur fade" id="modal-add-filterrule" tabindex="-1" role="dialog" aria-hidden="true"
      data-bs-backdrop="static" data-bs-keyboard="false">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modal-filterrule-title">新增规则</h5>
@@ -197,7 +123,7 @@
         <input type="hidden" id="filtergroup_id"/>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="overflow-x: hidden">
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-3">
@@ -289,7 +215,7 @@
                   {% for Rule in Init_RuleGroup.rules %}
                     <label class="form-selectgroup-item">
                       <input type="button" value="{{ Rule | safe }}" class="form-selectgroup-input"
-                             onclick="javascript:apply_templated(this)">
+                             onclick="apply_templated(this)">
                       <span class="form-selectgroup-label">{{ Rule.name }}</span>
                     </label>
                   {% endfor %}
@@ -303,7 +229,7 @@
         <button id="filterrule_close_btn" class="btn btn-link">
           取消
         </button>
-        <button id="add_or_edit_filterrule_btn" class="btn btn-primary ms-auto" onclick="javascript:add_filterrule()">
+        <button id="add_or_edit_filterrule_btn" class="btn btn-primary ms-auto" onclick="add_filterrule()">
           新增
         </button>
       </div>
@@ -334,7 +260,7 @@
             <div class="mb-3">
               <label class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="rulegroup_default"
-                       onclick="javascript:change_over_edition_check(this)">
+                       onclick="change_over_edition_check(this)">
                 <span class="form-check-label">默认 <span class="form-help"
                                                           title="将该规则组设为默认规则，在远程搜索、订阅等未指定规则组的场景下默认使用"
                                                           data-bs-toggle="tooltip">?</span></span>
@@ -446,10 +372,8 @@
     $("#rule_exclude").val('');
     $("#rule_sizelimit").val('');
     $("#rule_free").val('');
-    $("#filterrule_close_btn").text("取消");
     $("#add_or_edit_filterrule_btn").text("新增");
-    $("#filterrule_close_btn").unbind('click');
-    $("#filterrule_close_btn").click(function () {
+    $("#filterrule_close_btn").text("取消").unbind('click').click(function () {
       $("#modal-add-filterrule").modal('hide');
     });
     $("#modal-add-filterrule").modal('show');
@@ -462,33 +386,22 @@
 
   // 恢复初始规则
   function restore_filtergroup() {
-    var init_rulegroups =
-    {{ Init_RuleGroups | safe
-     }}
-    var need_init_groupid = [];
-    var i = 0;
-    $("input[name=init_rulegroup]").each(function () {
-      if ($(this).prop("checked")) {
-        need_init_groupid[i] = $(this).val();
-        i = i + 1;
-      }
-      ;
-    });
-    $("#restore_rulegroup_btn").text("恢复中");
-    $("#restore_rulegroup_btn").attr("disabled", true);
+    let init_rulegroups = {{ Init_RuleGroups | safe }};
+    let need_init_groupid = select_GetSelectedVAL("init_rulegroup");
+    $("#restore_rulegroup_btn").text("恢复中").attr("disabled", true);
     ajax_post("restore_filtergroup", {
       "groupids": need_init_groupid,
       "init_rulegroups": init_rulegroups
     }, function (ret) {
       $("#modal-restore-filtergroup").modal('hide');
-      navmenu('filterrule');
+      window_history_refresh();
     });
   }
 
   // 设置默认规则组
   function set_default_filtergroup(id) {
     ajax_post("set_default_filtergroup", {"id": id}, function (ret) {
-      navmenu('filterrule');
+      window_history_refresh();
     });
   }
 
@@ -506,10 +419,8 @@
         $("#rule_exclude").val(ret.info.exclude);
         $("#rule_sizelimit").val(ret.info.size);
         $("#rule_free").val(ret.info.free);
-        $("#filterrule_close_btn").text("删除");
         $("#add_or_edit_filterrule_btn").text("修改");
-        $("#filterrule_close_btn").unbind('click');
-        $("#filterrule_close_btn").click(function () {
+        $("#filterrule_close_btn").text("删除").unbind('click').click(function () {
           delete_filterrule(ret.info.id);
         });
         $("#modal-add-filterrule").modal('show');
@@ -519,23 +430,24 @@
 
   // 新增规则组
   function add_filtergroup() {
-    var name = $("#rulegroup_name").val();
+    const name = $("#rulegroup_name").val();
     if (!name) {
       $("#rulegroup_name").addClass("is-invalid");
       return;
     } else {
       $("#rulegroup_name").removeClass("is-invalid");
     }
+    let is_default;
     if ($("#rulegroup_default").prop("checked")) {
-      var is_default = 'Y';
+      is_default = 'Y';
     } else {
-      var is_default = 'N';
+      is_default = 'N';
     }
-    var params = {"name": name, "default": is_default};
+    const params = {"name": name, "default": is_default};
     ajax_post("add_filtergroup", params, function (ret) {
       if (ret.code == 0) {
         $("#modal-add-filtergroup").modal('hide');
-        navmenu('filterrule');
+        window_history_refresh();
       }
     });
   }
@@ -545,26 +457,26 @@
     show_confirm_modal("删除规则组后，该组下所有的规则将会同时被删除，是否确认删除 " + name + " ？", function () {
       hide_confirm_modal();
       ajax_post("del_filtergroup", {"id": id}, function (ret) {
-        navmenu('filterrule');
+        window_history_refresh();
       });
     });
   }
 
   // 新增规则
   function add_filterrule() {
-    var rule_id = $("#filterrule_id").val();
-    var group_id = $("#filtergroup_id").val();
-    var rule_name = $("#rule_name").val();
-    var rule_free = $("#rule_free").val();
+    const rule_id = $("#filterrule_id").val();
+    const group_id = $("#filtergroup_id").val();
+    const rule_name = $("#rule_name").val();
+    const rule_free = $("#rule_free").val();
     if (!rule_name) {
       $("#rule_name").addClass("is-invalid");
       return;
     } else {
       $("#rule_name").removeClass("is-invalid");
     }
-    var rule_sizelimit = $("#rule_sizelimit").val();
+    const rule_sizelimit = $("#rule_sizelimit").val();
     if (rule_sizelimit) {
-      var reg = /^[0-9,]*$/;
+      const reg = /^[0-9,]*$/;
       if (!reg.test(rule_sizelimit)) {
         $("#rule_sizelimit").addClass("is-invalid");
         return;
@@ -572,7 +484,7 @@
         $("#rule_sizelimit").removeClass("is-invalid");
       }
     }
-    var params = {
+    const params = {
       rule_id: rule_id,
       group_id: group_id,
       rule_name: rule_name,
@@ -585,23 +497,23 @@
     ajax_post("add_filterrule", params, function (ret) {
       if (ret.code == 0) {
         $("#modal-add-filterrule").modal('hide');
-        navmenu('filterrule');
+        window_history_refresh();
       }
     });
   }
 
   // 删除规则
   function delete_filterrule(id) {
-    var params = {"id": id};
+    const params = {"id": id};
     ajax_post("del_filterrule", params, function (ret) {
       $("#modal-add-filterrule").modal('hide');
-      navmenu('filterrule');
+      window_history_refresh();
     });
   }
 
   // 应用规则模板
   function apply_templated(item) {
-    var rule = item.value.replace(/'/g, "\"");
+    let rule = item.value.replace(/'/g, "\"");
     rule = rule.replace(/None/g, "\"\"");
     rule = JSON.parse(rule)
     $("#rule_name").val(rule["name"]);
@@ -611,9 +523,7 @@
 
   //分计规则组
   function share_filtergroup(id) {
-    show_wait_process();
     ajax_post("share_filtergroup", {"id": id}, function (ret) {
-      hide_wait_process();
       if (ret.code == 0) {
         $("#share_filtergroup_code").text(ret.string);
         $("#modal-share-filtergroup").modal('show');
@@ -631,16 +541,14 @@
 
   //导入编规则组
   function import_filtergroup() {
-    content = $("#import_filtergroup_code").val();
+    const content = $("#import_filtergroup_code").val();
     if (!content) {
       return;
     }
     $("#modal-import-filtergroup").modal('hide');
-    show_wait_process();
     ajax_post("import_filtergroup", {"content": content}, function (ret) {
-      hide_wait_process();
       if (ret.code == 0) {
-        navmenu('filterrule');
+        window_history_refresh();
       } else {
         show_fail_modal(`规则导入失败：${ret.msg}`, function () {
           $("#modal-import-filtergroup").modal('show');

@@ -1,23 +1,26 @@
 import re
 
+from app.conf import ModuleConf
 from app.helper import DbHelper
+from app.media.meta import ReleaseGroupsMatcher
 from app.utils import StringUtils
 from app.utils.commons import singleton
 from app.utils.types import MediaType
-from config import TORRENT_SEARCH_PARAMS
 
 
 @singleton
 class Filter:
+    rg_matcher = None
     dbhelper = None
     _groups = []
     _rules = []
 
     def __init__(self):
-        self.dbhelper = DbHelper()
         self.init_config()
 
     def init_config(self):
+        self.dbhelper = DbHelper()
+        self.rg_matcher = ReleaseGroupsMatcher()
         self._groups = self.dbhelper.get_config_filter_group()
         self._rules = self.dbhelper.get_config_filter_rule()
 
@@ -33,8 +36,8 @@ class Filter:
                 "default": group.IS_DEFAULT,
                 "note": group.NOTE
             }
-            if groupid and str(groupid) == str(group.ID) \
-                    or default and group.IS_DEFAULT == "Y":
+            if (groupid and str(groupid) == str(group.ID)) \
+                    or (default and group.IS_DEFAULT == "Y"):
                 return group_info
             ret_groups.append(group_info)
         if groupid or default:
@@ -80,6 +83,15 @@ class Filter:
             return ret_rules[0] if ret_rules else {}
         return ret_rules
 
+    def get_rule_first_order(self, rulegroup):
+        """
+        获取规则的最高优先级
+        """
+        if not rulegroup:
+            rulegroup = self.get_rule_groups(default=True)
+        first_order = min([int(rule_info.get("pri")) for rule_info in self.get_rules(groupid=rulegroup)] or [0])
+        return 100 - first_order
+
     def check_rules(self, meta_info, rulegroup=None):
         """
         检查种子是否匹配站点过滤规则：排除规则、包含规则，优先规则
@@ -89,6 +101,9 @@ class Filter:
         """
         if not meta_info:
             return False, 0, ""
+        # 为-1时不使用过滤规则
+        if rulegroup and int(rulegroup) == -1:
+            return True, 0, "不过滤"
         if meta_info.subtitle:
             title = "%s %s" % (meta_info.org_string, meta_info.subtitle)
         else:
@@ -138,6 +153,7 @@ class Filter:
             # 大小
             sizes = filter_info.get('size')
             if sizes and rule_match and meta_info.size:
+                meta_info.size = StringUtils.num_filesize(meta_info.size)
                 if sizes.find(',') != -1:
                     sizes = sizes.split(',')
                     if sizes[0].isdigit():
@@ -236,14 +252,14 @@ class Filter:
         """
         # 过滤质量
         if filter_args.get("restype"):
-            restype_re = TORRENT_SEARCH_PARAMS["restype"].get(filter_args.get("restype"))
-            if not meta_info.resource_type:
+            restype_re = ModuleConf.TORRENT_SEARCH_PARAMS["restype"].get(filter_args.get("restype"))
+            if not meta_info.get_edtion_string():
                 return False, 0, f"{meta_info.org_string} 不符合质量 {filter_args.get('restype')} 要求"
-            if restype_re and not re.search(r"%s" % restype_re, meta_info.resource_type, re.I):
+            if restype_re and not re.search(r"%s" % restype_re, meta_info.get_edtion_string(), re.I):
                 return False, 0, f"{meta_info.org_string} 不符合质量 {filter_args.get('restype')} 要求"
         # 过滤分辨率
         if filter_args.get("pix"):
-            pix_re = TORRENT_SEARCH_PARAMS["pix"].get(filter_args.get("pix"))
+            pix_re = ModuleConf.TORRENT_SEARCH_PARAMS["pix"].get(filter_args.get("pix"))
             if not meta_info.resource_pix:
                 return False, 0, f"{meta_info.org_string} 不符合分辨率 {filter_args.get('pix')} 要求"
             if pix_re and not re.search(r"%s" % pix_re, meta_info.resource_pix, re.I):
@@ -252,8 +268,14 @@ class Filter:
         if filter_args.get("team"):
             team = filter_args.get("team")
             if not meta_info.resource_team:
-                return False, 0, f"{meta_info.org_string} 不符合制作组/字幕组 {team} 要求"
-            if team and not re.search(r"%s" % team, meta_info.resource_team, re.I):
+                resource_team = self.rg_matcher.match(
+                    title=meta_info.org_string,
+                    groups=team)
+                if not resource_team:
+                    return False, 0, f"{meta_info.org_string} 不符合制作组/字幕组 {team} 要求"
+                else:
+                    meta_info.resource_team = resource_team
+            elif not re.search(r"%s" % team, meta_info.resource_team, re.I):
                 return False, 0, f"{meta_info.org_string} 不符合制作组/字幕组 {team} 要求"
         # 过滤促销
         if filter_args.get("sp_state"):
@@ -277,7 +299,7 @@ class Filter:
             key = filter_args.get("key")
             if not re.search(r"%s" % key, meta_info.org_string, re.I):
                 return False, 0, f"{meta_info.org_string} 不符合 {key} 要求"
-        # 过滤过滤规则
+        # 过滤过滤规则，-1表示不使用过滤规则，空则使用默认过滤规则
         if filter_args.get("rule"):
             # 已设置默认规则
             match_flag, order_seq, rule_name = self.check_rules(meta_info, filter_args.get("rule"))

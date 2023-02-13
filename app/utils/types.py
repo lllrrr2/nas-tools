@@ -12,7 +12,7 @@ class DownloaderType(Enum):
     QB = 'Qbittorrent'
     TR = 'Transmission'
     Client115 = '115网盘'
-    Aria2 = 'Aria2'
+    PikPak = 'PikPak'
 
 
 class SyncType(Enum):
@@ -29,6 +29,8 @@ class SearchType(Enum):
     OT = "手动下载"
     TG = "Telegram"
     API = "第三方API请求"
+    SLACK = "Slack"
+    SYNOLOGY = "Synology Chat"
 
 
 class RmtMode(Enum):
@@ -50,11 +52,12 @@ class MatchMode(Enum):
 class OsType(Enum):
     WINDOWS = "Windows"
     LINUX = "Linux"
+    SYNOLOGY = "Synology"
+    MACOS = "MacOS"
+    DOCKER = "Docker"
 
 
 class IndexerType(Enum):
-    JACKETT = "Jackett"
-    PROWLARR = "Prowlarr"
     BUILTIN = "Indexer"
 
 
@@ -71,21 +74,23 @@ class BrushDeleteType(Enum):
     UPLOADSIZE = "上传量"
     DLTIME = "下载耗时"
     AVGUPSPEED = "平均上传速度"
+    IATIME = "未活动时间"
 
 
-class SystemDictType(Enum):
-    BrushMessageSwitch = "刷流消息开关"
-    BrushForceUpSwitch = "刷流强制做种开关"
+# 站点框架
+class SiteSchema(Enum):
+    DiscuzX = "Discuz!"
+    Gazelle = "Gazelle"
+    Ipt = "IPTorrents"
+    NexusPhp = "NexusPhp"
+    NexusProject = "NexusProject"
+    NexusRabbit = "NexusRabbit"
+    SmallHorse = "Small Horse"
+    Unit3d = "Unit3d"
+    TorrentLeech = "TorrentLeech"
+    FileList = "FileList"
+    TNode = "TNode"
 
 
-# 转移模式
-RMT_MODES = {
-    "copy": RmtMode.COPY,
-    "link": RmtMode.LINK,
-    "softlink": RmtMode.SOFTLINK,
-    "move": RmtMode.MOVE,
-    "rclone": RmtMode.RCLONE,
-    "rclonecopy": RmtMode.RCLONECOPY,
-    "minio": RmtMode.MINIO,
-    "miniocopy": RmtMode.MINIOCOPY
-}
+MovieTypes = ['MOV', '电影']
+TvTypes = ['TV', '电视剧']

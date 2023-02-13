@@ -1,3 +1,4 @@
+{% import 'macro/svg.html' as SVG %}
 <div class="container-xl">
   <!-- Page title -->
   <div class="page-header d-print-none">
@@ -10,21 +11,11 @@
       <div class="col-auto ms-auto d-print-none">
         <div class="btn-list">
           <a href="javascript:show_user_modal()" class="btn btn-primary d-none d-sm-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            {{ SVG.plus() }}
             新增用户
           </a>
           <a href="javascript:show_user_modal()" class="btn btn-primary d-sm-none btn-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                 stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            {{ SVG.plus() }}
           </a>
         </div>
       </div>
@@ -45,7 +36,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-vcenter card-table">
+            <table class="table table-vcenter card-table table-hover table-striped">
               <thead>
               <tr>
                 <th>用户名</th>
@@ -67,13 +58,7 @@
                     </td>
                     <td>
                       <a href="javascript:delete_user('{{ User.name }}')" title="删除用户">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24"
-                             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                             stroke-linecap="round" stroke-linejoin="round">
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
+                        {{ SVG.x() }}
                       </a>
                     </td>
                   </tr>
@@ -127,8 +112,8 @@
                 <span class="form-selectgroup-label">资源搜索</span>
               </label>
               <label class="form-selectgroup-item">
-                <input type="checkbox" name="user_pris" value="推荐" class="form-selectgroup-input" checked>
-                <span class="form-selectgroup-label">推荐</span>
+                <input type="checkbox" name="user_pris" value="探索" class="form-selectgroup-input" checked>
+                <span class="form-selectgroup-label">探索</span>
               </label>
               <label class="form-selectgroup-item">
                 <input type="checkbox" name="user_pris" value="站点管理" class="form-selectgroup-input">
@@ -173,16 +158,9 @@
 
   // 新增用户
   function add_user() {
-    var name = $("#user_name").val();
-    var password = $("#user_password").val();
-    var pris = [];
-    var i = 0;
-    $("input[name=user_pris]").each(function () {
-      if ($(this).prop("checked")) {
-        pris[i] = $(this).val();
-        i = i + 1;
-      }
-    });
+    const name = $("#user_name").val();
+    const password = $("#user_password").val();
+    let pris = select_GetSelectedVAL("user_pris");
     if (!name) {
       $("#user_name").addClass("is-invalid");
       return;
@@ -195,21 +173,21 @@
     } else {
       $("#user_password").removeClass("is-invalid");
     }
-    if (pris.length == 0) {
+    if (pris.length === 0) {
       return;
     }
     $("#modal-user").modal('hide');
-    var params = {"oper": "add", "name": name, "password": password, "pris": pris};
+    const params = {"oper": "add", "name": name, "password": password, "pris": pris};
     ajax_post("user_manager", params, function (ret) {
-      navmenu('users');
+      window_history_refresh();
     });
   }
 
   // 删除用户
   function delete_user(name) {
-    var params = {"oper": "del", "name": name};
+    const params = {"oper": "del", "name": name};
     ajax_post("user_manager", params, function (ret) {
-      navmenu('users');
+      window_history_refresh();
     });
   }
 </script>

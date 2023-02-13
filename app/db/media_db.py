@@ -5,16 +5,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.pool import QueuePool
 from app.db.models import BaseMedia, MEDIASYNCITEMS, MEDIASYNCSTATISTIC
-from config import CONFIG
+from app.utils import ExceptionUtils
+from config import Config
 
 lock = threading.Lock()
 _Engine = create_engine(
-    f"sqlite:///{os.path.join(CONFIG.get_config_path(), 'media.db')}?check_same_thread=False",
+    f"sqlite:///{os.path.join(Config().get_config_path(), 'media.db')}?check_same_thread=False",
     echo=False,
     poolclass=QueuePool,
     pool_pre_ping=True,
-    pool_size=10,
-    pool_recycle=60 * 30
+    pool_size=50,
+    pool_recycle=60 * 10,
+    max_overflow=0
 )
 _Session = scoped_session(sessionmaker(bind=_Engine,
                                        autoflush=True,
@@ -54,7 +56,7 @@ class MediaDb:
             self.session.commit()
             return True
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
             self.session.rollback()
         return False
 
@@ -68,7 +70,7 @@ class MediaDb:
             self.session.commit()
             return True
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
             self.session.rollback()
         return False
 
@@ -89,27 +91,34 @@ class MediaDb:
             self.session.commit()
             return True
         except Exception as e:
-            print(str(e))
+            ExceptionUtils.exception_traceback(e)
             self.session.rollback()
         return False
 
     def exists(self, server_type, title, year, tmdbid):
         if not server_type or not title:
             return False
-        if title and year:
-            count = self.session.query(MEDIASYNCITEMS).filter(MEDIASYNCITEMS.SERVER == server_type,
-                                                              MEDIASYNCITEMS.TITLE == title,
-                                                              MEDIASYNCITEMS.YEAR == str(year)).count()
-        else:
-            count = self.session.query(MEDIASYNCITEMS).filter(MEDIASYNCITEMS.SERVER == server_type,
-                                                              MEDIASYNCITEMS.TITLE == title).count()
-        if count > 0:
-            return True
-        elif tmdbid:
+        if tmdbid:
             count = self.session.query(MEDIASYNCITEMS).filter(MEDIASYNCITEMS.TMDBID == str(tmdbid)).count()
-            if count > 0:
+            if count:
                 return True
-        return False
+        if year:
+            items = self.session.query(MEDIASYNCITEMS).filter(MEDIASYNCITEMS.SERVER == server_type,
+                                                              MEDIASYNCITEMS.TITLE == title,
+                                                              MEDIASYNCITEMS.YEAR == str(year)).all()
+        else:
+            items = self.session.query(MEDIASYNCITEMS).filter(MEDIASYNCITEMS.SERVER == server_type,
+                                                              MEDIASYNCITEMS.TITLE == title).all()
+        if items:
+            if tmdbid:
+                for item in items:
+                    if not item.TMDBID or item.TMDBID == str(tmdbid):
+                        return True
+                return False
+            else:
+                return True
+        else:
+            return False
 
     def get_statistics(self, server_type):
         if not server_type:

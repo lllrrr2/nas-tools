@@ -94,6 +94,11 @@ class CONFIGUSERRSS(Base):
     STATE = Column(Text)
     SAVE_PATH = Column(Text)
     DOWNLOAD_SETTING = Column(Integer)
+    RECOGNIZATION = Column(Text)
+    OVER_EDITION = Column(Integer)
+    SITES = Column(Text)
+    FILTER_ARGS = Column(Text)
+    MEDIAINFOS = Column(Text)
     NOTE = Column(Text)
 
 
@@ -140,6 +145,10 @@ class DOUBANMEDIAS(Base):
     RATING = Column(Text)
     IMAGE = Column(Text)
     STATE = Column(Text)
+    ADD_TIME = Column(Text)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class DOWNLOADHISTORY(Base):
@@ -220,11 +229,13 @@ class RSSMOVIES(Base):
     ID = Column(Integer, Sequence('ID'), primary_key=True)
     NAME = Column(Text, index=True)
     YEAR = Column(Text)
+    KEYWORD = Column(Text)
     TMDBID = Column(Text)
     IMAGE = Column(Text)
     RSS_SITES = Column(Text)
     SEARCH_SITES = Column(Text)
     OVER_EDITION = Column(Integer)
+    FILTER_ORDER = Column(Integer)
     FILTER_RESTYPE = Column(Text)
     FILTER_PIX = Column(Text)
     FILTER_RULE = Column(Integer)
@@ -262,12 +273,14 @@ class RSSTVS(Base):
     ID = Column(Integer, Sequence('ID'), primary_key=True)
     NAME = Column(Text, index=True)
     YEAR = Column(Text)
+    KEYWORD = Column(Text)
     SEASON = Column(Text)
     TMDBID = Column(Text)
     IMAGE = Column(Text)
     RSS_SITES = Column(Text)
     SEARCH_SITES = Column(Text)
     OVER_EDITION = Column(Integer)
+    FILTER_ORDER = Column(Integer)
     FILTER_RESTYPE = Column(Text)
     FILTER_PIX = Column(Text)
     FILTER_RULE = Column(Integer)
@@ -293,6 +306,21 @@ class RSSTVEPISODES(Base):
     ID = Column(Integer, Sequence('ID'), primary_key=True)
     RSSID = Column(Text, index=True)
     EPISODES = Column(Text)
+
+
+class TORRENTREMOVETASK(Base):
+    __tablename__ = 'TORRENT_REMOVE_TASK'
+
+    ID = Column(Integer, Sequence('ID'), primary_key=True)
+    NAME = Column(Text)
+    ACTION = Column(Integer)
+    INTERVAL = Column(Integer)
+    ENABLED = Column(Integer)
+    SAMEDATA = Column(Integer)
+    ONLYNASTOOL = Column(Integer)
+    DOWNLOADER = Column(Text)
+    CONFIG = Column(Text)
+    NOTE = Column(Text)
 
 
 class SEARCHRESULTINFO(Base):
@@ -361,6 +389,8 @@ class SITEBRUSHTASK(Base):
     REMOVE_COUNT = Column(Text)
     DOWNLOAD_SIZE = Column(Text)
     UPLOAD_SIZE = Column(Text)
+    SENDMESSAGE = Column(Text)
+    FORCEUPLOAD = Column(Text)
     STATE = Column(Text)
     LST_MOD_DATE = Column(Text)
 
@@ -376,6 +406,9 @@ class SITEBRUSHTORRENTS(Base):
     DOWNLOADER = Column(Text)
     DOWNLOAD_ID = Column(Text)
     LST_MOD_DATE = Column(Text)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class SITESTATISTICSHISTORY(Base):
@@ -419,9 +452,16 @@ class SITEUSERINFOSTATS(Base):
     SEEDING_SIZE = Column(Integer)
     BONUS = Column(Float)
     URL = Column(Text, unique=True)
-    FAVICON = Column(Text)
     MSG_UNREAD = Column(Integer)
     EXT_INFO = Column(Text)
+
+
+class SITEFAVICON(Base):
+    __tablename__ = 'SITE_FAVICON'
+
+    SITE = Column(Text, primary_key=True)
+    URL = Column(Text)
+    FAVICON = Column(Text)
 
 
 class SITEUSERSEEDINGINFO(Base):
@@ -492,6 +532,7 @@ class TRANSFERUNKNOWN(Base):
     ID = Column(Integer, Sequence('ID'), primary_key=True)
     PATH = Column(Text, index=True)
     DEST = Column(Text)
+    MODE = Column(Text)
     STATE = Column(Text, index=True)
 
 
